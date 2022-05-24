@@ -43,23 +43,27 @@ const output = [];
 // read from file
 const file = fs.readFileSync(csvFile, 'utf-8');
 // parse from file using delimiter, specifies headers and start from line 2, with externally casting
-parse(file, { delimiter: ',', columns: headers, fromLine: 2, cast: (value, context) => {
-    // parse phone number to integer, if field is empty, then return 0
-    if (context.column === 'phone'){
-        return parseInt(value) ? parseInt(value) : 0;
+parse(file, { delimiter: ',', columns: headers, fromLine: 2, 
+    cast: (value, context) => {
+        // parse phone number to integer, if field is empty, then return 0
+        if (context.column === 'phone'){
+            return parseInt(value) ? parseInt(value) : 0;
+        }
+        return value;
     }
-    return value;
-}}, (error, user: User[]) => {
-    if (error){
-        console.error(error);
-    }
-    // modify each field value of the user
-    user.forEach(user => {
-        user.__v = user.__v.valueOf();
-        user.firstName = user.firstName.toUpperCase();
-        user.memberStatus = (user.memberStatus.toString().toLowerCase() === 'true');
-    });
-    // output
+},
+// callback
+(error, user: User[]) => {
+        if (error){
+            console.error(error);
+        }
+        // can manually modify each field value of the user
+        user.forEach(user => {
+            user.__v = user.__v.valueOf();
+            user.firstName = user.firstName.toUpperCase();
+            user.memberStatus = (user.memberStatus.toString().toLowerCase() === 'true');
+        });
+        // output
     console.log(user);
 });
 
