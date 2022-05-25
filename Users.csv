@@ -1,3 +1,3 @@
-_id,keys,firstName,surname,email,phone,memberStatus,profileImage,lastLoginAt,issuer,__v
-6221337c835d83015afd0ceb,"Samsung Galaxy S20+, 696969, phone;ULI Fob, 12345678, hidprox",Alec,Bailey,alec@lastlock.com,123,TRUE,,1653341453,did:ethr:0xF7803218D792E23e507C03aeC6CF6e26BA915EC6,0
-62462ccd510bd318439d27d5,,Jack,Ryan,jack@lasstlock.com,,TRUE,,1653072788,did:ethr:0xe773e13A4BBD29b026a30ED84aDb25d31aBDA3bA,0
+keys,firstName,surname,email,phone,memberStatus
+"Samsung Galaxy S20+, 696969, phone ; ULI Fob, 12345678, hidprox",Alec,Bailey,alec@lastlock.com,123,TRUE
+,Jack,Ryan,jack@lasstlock.com,,TRUE
