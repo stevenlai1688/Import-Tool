@@ -1,0 +1,4 @@
+keys,firstName,surname,email,phone,memberStatus
+"Samsung Galaxy S20+, 696969, phone ; ULI Fob, 12345678, hidprox",Alec,Bailey,testmail,123,TRUE
+,Jack,Ryan,another test,,TRUE
+"Samsung Galaxy S20+, 1234, phone ; ULI Fob, 12345678, hidprox ;  iPhone 12, 12345, phone",Steven,Lai,stevenlai1688@gmail.com,4253248573,FALSE

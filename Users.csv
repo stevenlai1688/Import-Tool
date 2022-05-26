@@ -1,3 +1,4 @@
 keys,firstName,surname,email,phone,memberStatus
 "Samsung Galaxy S20+, 696969, phone ; ULI Fob, 12345678, hidprox",Alec,Bailey,alec@lastlock.com,123,TRUE
 ,Jack,Ryan,jack@lasstlock.com,,TRUE
+"Samsung Galaxy S19+, 312, phone ; ULI Fob, 12345678, hidprox; ULI Fob, 555555, hidprox",Alec,Bailey,alec@lastlock.com,123,TRUE

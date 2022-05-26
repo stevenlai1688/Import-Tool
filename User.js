@@ -14,8 +14,8 @@ var CREDENTIAL_TYPE_ENUM;
     CREDENTIAL_TYPE_ENUM["iclass"] = "iclass";
     CREDENTIAL_TYPE_ENUM["tx5577"] = "tx5577";
 })(CREDENTIAL_TYPE_ENUM = exports.CREDENTIAL_TYPE_ENUM || (exports.CREDENTIAL_TYPE_ENUM = {}));
-// function fillKeys (str: string, userList: UserList[]){
-//   for(const user of userList){
+// function fillKeys (str: string, allUsers: UserList[]){
+//   for(const user of allUsers){
 // for (const key of user.keys){
 //   key.name = str.split(',')[0].trim();
 //   key.key = str.split(',')[1].trim();
@@ -25,7 +25,6 @@ var CREDENTIAL_TYPE_ENUM;
 // }
 // find absolute path
 var csvFile = path.resolve(__dirname, 'Users.csv');
-console.log(csvFile);
 // each header, allow to skip first line of csv file
 var headers = ['keys', 'firstName', 'surname', 'email', 'phone', 'memberStatus'];
 // --- another potential way to approach this
@@ -44,11 +43,19 @@ var headers = ['keys', 'firstName', 'surname', 'email', 'phone', 'memberStatus']
 // https://csv.js.org/parse/options/
 // read from file
 var file = fs.readFileSync(csvFile, 'utf-8');
-var userList = [];
+var allUsers = [];
+// list to keep keys values
 var keyList = [];
 var typeList = [];
 var nameList = [];
 var keyToAdd = [];
+var index = 0;
+// total users as the total number of lines in the csv file - 1 at least
+var totalUsers = fs.readFileSync(csvFile, 'utf-8').split('\n').length - 1;
+// instantiate keyToAdd array
+for (var i = 0; i < totalUsers; i++) {
+    keyToAdd[i] = [];
+}
 // parse from file using delimiter, specifies headers and start from line 2, with external casting
 (0, csv_parse_1.parse)(file, {
     delimiter: ',',
@@ -59,16 +66,16 @@ var keyToAdd = [];
         if (context.column === 'keys') {
             var output = value.split(';').map(function (element) { return element.trim(); });
             for (var i = 0; i < output.length; i++) {
-                // console.log(output[i] + "IS OUTPUT "+i);
-                nameList.push(output[i].split(',')[0]);
-                keyList.push(output[i].split(',')[1]);
-                typeList.push(output[i].split(',')[2]);
-                // BUG FIX HERE!!!, need to make keyToAdd a 2D array, push two values in the first row, push 0 values in 2nd row
-                keyToAdd.push({ name: nameList[i].trim(), key: keyList[i].trim(), type: typeList[i].trim() });
-                // console.log(nameList);
-                // console.log(typeList);
-                // console.log(keyList);
+                // call function to split our output and push it to a separate array to be mapped.
+                splitAndPush(output[i]);
+                // map key values to an array of key value arrays
+                keyToAdd[index].push({ name: nameList[i], key: keyList[i], type: typeList[i] });
             }
+            index++;
+            // reset lists to store next user's key values
+            keyList = [];
+            typeList = [];
+            nameList = [];
             return output;
         }
         // return boolean value based on string
@@ -79,32 +86,52 @@ var keyToAdd = [];
     }
 }, 
 // callback
-function (error, user) {
+function (error, list) {
     if (error) {
         console.error(error);
     }
     // add from each user to a list
-    for (var i = 0; i < user.length; i++) {
-        userList.push({
-            // if key does not exist, then it is an empty string
-            // BUG TO FIX
-            // keytoadd at index 0 (user number) should contain two key arrays, at index 1 should contain 0 key arrays
+    var i = 0;
+    for (var _i = 0, list_1 = list; _i < list_1.length; _i++) {
+        var user = list_1[_i];
+        allUsers.push({
+            // map each value
             keys: keyToAdd[i],
-            firstName: user[i].firstName,
-            surname: user[i].surname,
-            email: user[i].email,
-            phone: user[i].phone,
-            memberStatus: user[i].memberStatus
+            firstName: user.firstName,
+            surname: user.surname,
+            email: user.email,
+            phone: user.phone,
+            memberStatus: user.memberStatus
         });
+        i++;
     }
-    // output
-    for (var i = 0; i < userList.length; i++) {
-        for (var _i = 0, _a = userList[i].keys; _i < _a.length; _i++) {
-            var key = _a[_i];
-            console.log(key.name);
-            console.log(key.key);
-            console.log(key.type);
-        }
-    }
-    console.log(userList);
+    // test output
+    console.log(keyToAdd);
+    console.log(allUsers);
 });
+/**
+ * splits the string of the csv file and populate it to respective array
+ * @param output string parsed from the csv file
+ */
+function splitAndPush(output) {
+    var splitVal = output.split(',').map(function (element) { return element.trim(); });
+    if (splitVal[0] === undefined || splitVal[0] === '') {
+        nameList.push('');
+    }
+    else {
+        nameList.push(splitVal[0]);
+    }
+    if (splitVal[1] === undefined || splitVal[1] === '') {
+        keyList.push('');
+    }
+    else {
+        keyList.push(splitVal[1]);
+    }
+    if (splitVal[2] === undefined || splitVal[2] === '') {
+        typeList.push(null);
+    }
+    else {
+        var value = splitVal[2];
+        typeList.push(value);
+    }
+}
