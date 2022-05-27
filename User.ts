@@ -1,4 +1,10 @@
-
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-console */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-plusplus */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-shadow */
+/* eslint-disable import/no-extraneous-dependencies */
 import * as fs from 'fs';
 import { parse } from 'csv-parse';
 import * as path from 'path';
@@ -25,7 +31,7 @@ export enum CREDENTIAL_TYPE_ENUM {
 // };
 export type key = {
   name: string,
-  key:  string,
+  key: string,
   type: CREDENTIAL_TYPE_ENUM
 };
 export interface UserList {
@@ -39,15 +45,15 @@ export interface UserList {
 
 // function fillKeys (str: string, allUsers: UserList[]){
 //   for(const user of allUsers){
-    // for (const key of user.keys){
-    //   key.name = str.split(',')[0].trim();
-    //   key.key = str.split(',')[1].trim();
-    //   key.type = str.split(',')[2].trim();
-    // }
+// for (const key of user.keys){
+//   key.name = str.split(',')[0].trim();
+//   key.key = str.split(',')[1].trim();
+//   key.type = str.split(',')[2].trim();
+// }
 //   }
 // }
 
-//!!! IMPORTANT
+//! !! IMPORTANT !!!
 // dealing with file from express request:
 // // transform the request file buffer to a string buffer
 // const buf = Buffer.from(req.file.buffer).toString();
@@ -92,9 +98,9 @@ let nameList:string[] = [];
 const keyToAdd:key [][] = [];
 let index = 0;
 // total users as the total number of lines in the csv file - 1 at least
-let totalUsers:number = fs.readFileSync(csvFile, 'utf-8').split('\n').length - 1;
+const totalUsers:number = fs.readFileSync(csvFile, 'utf-8').split('\n').length - 1;
 // instantiate keyToAdd array
-for (let i = 0; i < totalUsers; i++){
+for (let i = 0; i < totalUsers; i++) {
   keyToAdd[i] = [];
 }
 // parse from file using delimiter, specifies headers and start from line 2, with external casting
@@ -107,14 +113,14 @@ parse(
     cast: (value, context) => {
       // parse the keys, so far only splitting on semi-colon
       if (context.column === 'keys') {
-        const output: string[] = value.split(';').map(element => element.trim());
-        for (let i = 0; i < output.length; i++){
+        const output: string[] = value.split(';').map((element) => element.trim());
+        for (let i = 0; i < output.length; i++) {
           // call function to split our output and push it to a separate array to be mapped.
           splitAndPush(output[i]);
           // map key values to an array of key value arrays
-          keyToAdd[index].push({name: nameList[i], key: keyList[i], type: typeList[i]});
+          keyToAdd[index].push({ name: nameList[i], key: keyList[i], type: typeList[i] });
         }
-        index ++;
+        index++;
         // reset lists to store next user's key values
         keyList = [];
         typeList = [];
@@ -135,7 +141,7 @@ parse(
     }
     // add from each user to a list
     let i = 0;
-    for (const user of list){
+    for (const user of list) {
       allUsers.push({
         // map each value
         keys: keyToAdd[i],
@@ -143,41 +149,37 @@ parse(
         surname: user.surname,
         email: user.email,
         phone: user.phone,
-        memberStatus: user.memberStatus
+        memberStatus: user.memberStatus,
       });
       i++;
     }
     // test output
     console.log(keyToAdd);
     console.log(allUsers);
-  
-  }
+  },
 );
 /**
  * splits the string of the csv file and populate it to respective array
  * @param output string parsed from the csv file
  */
-function splitAndPush(output: string): void{
-  let splitVal = output.split(',').map(element => element.trim());
-          if (splitVal[0] === undefined || splitVal[0] === ''){
-            nameList.push('');
-          }
-          else {
-            nameList.push(splitVal[0]);
-          }
-          if (splitVal[1] === undefined || splitVal[1] === ''){
-            keyList.push('');
-          }
-          else {
-            keyList.push(splitVal[1]);
-          }
+function splitAndPush(output: string): void {
+  const splitVal = output.split(',').map((element) => element.trim());
+  if (splitVal[0] === undefined || splitVal[0] === '') {
+    nameList.push('');
+  } else {
+    nameList.push(splitVal[0]);
+  }
+  if (splitVal[1] === undefined || splitVal[1] === '') {
+    keyList.push('');
+  } else {
+    keyList.push(splitVal[1]);
+  }
 
-          if (splitVal[2] === undefined || splitVal[2] === '') {
-            const value:CREDENTIAL_TYPE_ENUM = <CREDENTIAL_TYPE_ENUM> '';
-            this.typeList.push(value);
-          }
-          else{
-            const value:CREDENTIAL_TYPE_ENUM = <CREDENTIAL_TYPE_ENUM> splitVal[2];
-            typeList.push(value);
-          }
+  if (splitVal[2] === undefined || splitVal[2] === '') {
+    const value:CREDENTIAL_TYPE_ENUM = <CREDENTIAL_TYPE_ENUM> '';
+    this.typeList.push(value);
+  } else {
+    const value:CREDENTIAL_TYPE_ENUM = <CREDENTIAL_TYPE_ENUM> splitVal[2];
+    typeList.push(value);
+  }
 }
