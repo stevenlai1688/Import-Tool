@@ -46,6 +46,23 @@ export interface UserList {
     // }
 //   }
 // }
+
+//!!! IMPORTANT
+// dealing with file from express request:
+// // transform the request file buffer to a string buffer
+// const buf = Buffer.from(req.file.buffer).toString();
+// // resolve the buffer to an absolute path and use it to parse
+// let file = path.resolve(buf);
+// ==========================
+// 1 way to possibly validate file type: NOT VERY CLEVER
+// private validateFile(@UploadedFile() UploadedFiles: Express.Multer.File) {
+//   const valid = 'csv';
+//   // break the filename by '.' and remove element top of the stack
+//   const extention = UploadedFiles.originalname.split('.').pop();
+//   // if the remaining elements contains the 'csv' string, then return 1, else -1
+//   return ((valid.indexOf(extention.toLowerCase())) >= 0) ? 1 : -1;
+// }
+
 // find absolute path
 const csvFile = path.resolve(__dirname, 'Users.csv');
 // each header, allow to skip first line of csv file
